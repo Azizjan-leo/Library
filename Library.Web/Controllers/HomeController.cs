@@ -1,5 +1,6 @@
 ﻿using Library.Web.Data;
 using Library.Web.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
@@ -17,20 +18,47 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var user = await _context.Users
-            .Include(x => x.ReadBooks)
-            .FirstAsync(x => x.UserName == "Zarina");
+        var query = $@"select b.*, 
+            case when coalesce(ub.""PplWhoReadId"", 'null') = 'd936c6e3-33f7-4f11-8740-e62d4d2e3e3a'
+            then true else false end as ""Read""
+            from ""Books"" b
+            left join ""ApplicationUserBook"" ub on b.""Id"" = ub.""ReadBooksId""";
 
-        var books = await _context.Books
-            .Include(x => x.Author)
-            .OrderBy(x => x.Title)
-            .ToListAsync();
-        
-        user.ReadBooks.Add(books.First(x => x.Id == 1));
-
-        await _context.SaveChangesAsync();
+        var books = await _context.ReadBooks
+         .FromSqlRaw(query)
+         .OrderBy(x => x.Title)
+         .ToListAsync();
 
         return View(books);
+    }
+
+    [Authorize]
+    public async Task<JsonResult> AddToReadList(int bookId)
+    {
+        var query = $@"insert into ""ApplicationUserBook"" (""PplWhoReadId"", ""ReadBooksId"")
+            values(
+            (select ""Id""
+            from ""AspNetUsers"" u
+            where u.""UserName"" = '{User.Identity.Name}'), {bookId})";
+
+        int noOfRowUpdated = await _context.Database.ExecuteSqlRawAsync(query);
+      
+        return Json(noOfRowUpdated);
+    }
+    
+    [Authorize]
+    public async Task<JsonResult> RemoveFromReadList(int bookId)
+    {
+        var query = $@"delete from ""ApplicationUserBook"" 
+            where ""PplWhoReadId"" = 
+            (select ""Id""
+            from ""AspNetUsers"" u
+            where u.""UserName"" = '{User.Identity.Name}')
+            and ""ReadBooksId"" = {bookId}";
+
+        int noOfRowUpdated = await _context.Database.ExecuteSqlRawAsync(query);
+      
+        return Json(noOfRowUpdated);
     }
 
     public IActionResult Privacy()

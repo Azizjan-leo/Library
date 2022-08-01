@@ -17,7 +17,10 @@ namespace Library.Web.Data
                 .HasIndex(x => x.Name);
             
             builder.Entity<Book>()
-                .HasIndex(x => x.Title);
+                .HasIndex(x => x.Title); 
+            
+            builder.Entity<ReadBook>()
+                .ToView(null);
 
             WritersAndBooksSeed.SeedWritersAndBooks(builder);
 
@@ -26,5 +29,6 @@ namespace Library.Web.Data
 
         public DbSet<Writer> Writers => Set<Writer>();
         public DbSet<Book> Books => Set<Book>();
+        public DbSet<ReadBook> ReadBooks => Set<ReadBook>();
     }
 }

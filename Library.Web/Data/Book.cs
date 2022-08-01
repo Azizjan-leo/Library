@@ -8,7 +8,7 @@ public class Book
 
     [Required]
     [MaxLength(256)]
-    public string Title { get; set; }
+    public string Title { get; set; } = string.Empty;
 
     public int AuthorId { get; set; }
 
@@ -16,4 +16,6 @@ public class Book
 
     [Required]
     public string Description { get; set; }
+
+    public virtual List<ApplicationUser> PplWhoRead { get; set; }
 }

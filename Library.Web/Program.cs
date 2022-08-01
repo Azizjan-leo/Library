@@ -1,5 +1,4 @@
 ﻿using Library.Web.Data;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,7 +12,7 @@ builder.Services.AddEntityFrameworkNpgsql().AddDbContext<ApplicationDbContext>(o
 builder.Services.AddDefaultIdentity<ApplicationUser>()
 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 builder.Services.AddRazorPages();
 
 var app = builder.Build();

@@ -5,5 +5,5 @@ namespace Library.Web.Data;
 
 public class ApplicationUser : IdentityUser
 {
-    public ICollection<Book> ReadBooks { get; set; } = new HashSet<Book>();
+    public virtual ICollection<Book> ReadBooks { get; set; } = new HashSet<Book>();
 }

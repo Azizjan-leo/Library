@@ -2,7 +2,7 @@
 @using Library.Web.Data
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
-@model List<Book>
+@model List<ReadBook>
 
 @{
     ViewData["Title"] = "Home Page";
@@ -20,7 +20,13 @@
                     @item.Title
                 </div> 
                 <div class="col-6">
-                   <a href="#" onclick="return getbyID('@item.Id')">I've read this</a>
+                    @if(@item.Read)
+                    {
+                        <a href="#" id="book-@item.Id" onclick="removeFromReadList('@item.Id')">Remove from read books</a>
+                    }
+                    else{
+                        <a href="#" id="book-@item.Id" onclick="addToReadList('@item.Id')">Add to read books</a>
+                    }
                 </div>
             </div>
         }

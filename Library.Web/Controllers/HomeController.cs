@@ -19,7 +19,10 @@ public class HomeController : Controller
     public async Task<IActionResult> Index()
     {
         var query = $@"select b.*, 
-            case when coalesce(ub.""PplWhoReadId"", 'null') = 'd936c6e3-33f7-4f11-8740-e62d4d2e3e3a'
+            case when coalesce(ub.""PplWhoReadId"", 'null') = 
+              (select ""Id""
+            from ""AspNetUsers"" u
+            where u.""UserName"" = '{User.Identity.Name}')
             then true else false end as ""Read""
             from ""Books"" b
             left join ""ApplicationUserBook"" ub on b.""Id"" = ub.""ReadBooksId""";

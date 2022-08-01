@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Library.Web.Data.Seeds;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Library.Web.Data
@@ -12,6 +13,14 @@ namespace Library.Web.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<Writer>()
+                .HasIndex(x => x.Name);
+            
+            builder.Entity<Book>()
+                .HasIndex(x => x.Title);
+
+            WritersAndBooksSeed.SeedWritersAndBooks(builder);
+
             base.OnModelCreating(builder);
         }
 

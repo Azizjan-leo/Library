@@ -1,4 +1,24 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿function getbyID(bookId) {
+    alert(bookId);
+    $.ajax({
+        url: "/Home/getbyID/" + EmpID,
+        typr: "GET",
+        contentType: "application/json;charset=UTF-8",
+        dataType: "json",
+        success: function (result) {
+            $('#EmployeeID').val(result.EmployeeID);
+            $('#Name').val(result.Name);
+            $('#Age').val(result.Age);
+            $('#State').val(result.State);
+            $('#Country').val(result.Country);
 
-// Write your JavaScript code.
+            $('#myModal').modal('show');
+            $('#btnUpdate').show();
+            $('#btnAdd').hide();
+        },
+        error: function (errormessage) {
+            alert(errormessage.responseText);
+        }
+    });
+    return false;
+}  
